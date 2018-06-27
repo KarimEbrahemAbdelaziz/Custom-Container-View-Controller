@@ -57,15 +57,38 @@ class CustomContainerViewController: UIViewController {
         if whereToGo == 0 {
             //remove(asChildViewController: sessionsViewController)
             //add(asChildViewController: self.summaryViewController)
-            cycleFromViewController(oldViewController: sessionsViewController, toViewController: summaryViewController)
+            pop(oldViewController: sessionsViewController, toViewController: summaryViewController)
         } else {
             //remove(asChildViewController: summaryViewController)
             //add(asChildViewController: self.sessionsViewController)
-            cycleFromViewController(oldViewController: summaryViewController, toViewController: sessionsViewController)
+            push(oldViewController: summaryViewController, toViewController: sessionsViewController)
         }
     }
     
-    private func cycleFromViewController(oldViewController: UIViewController, toViewController newViewController: UIViewController) {
+    private func push(oldViewController: UIViewController, toViewController newViewController: UIViewController) {
+        
+        addChildViewController(newViewController)
+        
+        // Add Child View as Subview
+        view.addSubview(newViewController.view)
+        
+        // Configure Child View
+        newViewController.view.frame = self.view.bounds
+        newViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        let customWidth = (self.view.window?.frame.width)!/2.0
+        //newViewController.view.layer.position.x = -customWidth
+        newViewController.view.layer.position.x = (customWidth)*(3)
+        UIView.animate(withDuration: 1.0, animations: {
+            oldViewController.view.layer.position.x = customWidth*(-3)
+            newViewController.view.layer.position.x = customWidth
+        }) { (finished) in
+            self.remove(asChildViewController: oldViewController)
+            self.add(asChildViewController: newViewController)
+        }
+        
+    }
+    
+    private func pop(oldViewController: UIViewController, toViewController newViewController: UIViewController) {
         
         addChildViewController(newViewController)
         
